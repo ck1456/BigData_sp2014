@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.subunit { fill: #380000; }
+
+.subunit-label {
+  fill: #FFFFFF;
+  fill-opacity: 0.8;
+  font-size: 12px;
+  font-weight: 300;
+  text-anchor: middle;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+
+
+var width = 960,
+    height = 1160;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+
+
+
+d3.json("uk1.json", function(error, uk) {
+	var subunits = topojson.feature(uk, uk.objects.subunits);
+		
+	
+	var projection = d3.geo.albers()
+    .center([20.20703125, 41.651200699345])
+    .parallels([50, 60])
+    .scale(8500)
+    .translate([width / 2, height / 2]);
+
+	var path = d3.geo.path()
+    .projection(projection);
+
+svg.selectAll(".subunit")
+      .data(subunits.features)
+    .enter().append("path")
+      .attr("class", function(d) { return "subunit " + d.id; })
+      .attr("d", path);
+
+  svg.selectAll(".subunit-label")
+      .data(subunits.features)
+    .enter().append("text")
+      .attr("class", function(d) { return "subunit-label " + d.id; })
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .attr("dy", ".35em")
+      .text(function(d) { return d.properties.name; });
+
+  svg.append("path")
+      .datum(places)
+      .attr("d", path)
+      .attr("class", "place");
+
+  svg.selectAll(".place-label")
+      .data(places.features)
+    .enter().append("text")
+      .attr("class", "place-label")
+      .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
+      .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+      .attr("dy", ".35em")
+      .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+      .text(function(d) { return d.properties.name; 
+      });
+});
+
+
+
+
+</script>
+
+</body>
