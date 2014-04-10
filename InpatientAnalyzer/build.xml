@@ -20,27 +20,30 @@
 		</jar>
 	</target>
 
+	<property name="hd.data.dir" value="project-sample" />
+	<property name="hd.out.dir" value="output-sample/health" />
+	
 	<target name="hadoop" depends="jar" description="Run the Hadoop job">
 		<echo message="Running hadoop command:" />
-		<echo message="hadoop fs -rm -r output/health" />
+		<echo message="hadoop fs -rm -r ${hd.out.dir}" />
 		<!-- clean up from previous run -->
 		<exec executable="hadoop">
 			<arg value="fs" />
 			<arg value="-rm" />
 			<arg value="-r" />
-			<arg value="output/health" />
+			<arg value="${hd.out.dir}" />
 		</exec>
 		<!-- Run Hadoop -->
-		<echo message="hadoop jar dist/InpatientAnalyzer.jar bigData.sp14.health.InpatientAnalyzer project output/health" />
+		<echo message="hadoop jar ${dist.dir}/InpatientAnalyzer.jar bigData.sp14.health.InpatientAnalyzer ${hd.data.dir} ${hd.out.dir}" />
 		<exec executable="hadoop">
 			<arg value="jar" />
-			<arg value="dist/InpatientAnalyzer.jar" />
+			<arg value="${dist.dir}/InpatientAnalyzer.jar" />
 			<arg value="bigData.sp14.health.InpatientAnalyzer" />
-			<arg value="project" />
-			<arg value="output/health" />
+			<arg value="${hd.data.dir}" />
+			<arg value="${hd.out.dir}" />
 		</exec>
 		<!-- Show results -->
-		<echo message="hadoop fs -cat output/health/part*" />
+		<echo message="hadoop fs -cat ${hd.out.dir}/part*" />
 		<!-- <exec executable="hadoop">
 			<arg value="fs" />
 			<arg value="-cat" />

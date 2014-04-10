@@ -31,7 +31,6 @@ public class InpatientReducer extends
                 if (!areaStats.containsKey(year)) {
                     AreaYearStats newStats = new AreaYearStats();
                     newStats.year = year;
-                    newStats.area = key.toString();
                     areaStats.put(year, newStats);
                 }
                 AreaYearStats stats = areaStats.get(year);
@@ -41,6 +40,7 @@ public class InpatientReducer extends
                 int severity = Integer.parseInt(t.get(2).toString());
                 stats.updateSeverityCount(severity);
 
+                // parse dollar amounts as doubles
                 String charges = t.get(3).toString().replaceAll("\\$", "");
                 stats.totalCharges += (int) Double.parseDouble(charges);
 
@@ -52,19 +52,46 @@ public class InpatientReducer extends
         }
 
         // for each year, output the stats
-        for (AreaYearStats stats : areaStats.values()) {
-            context.write(key, new Text(stats.toString()));
-        }
+//        for (AreaYearStats stats : areaStats.values()) {
+//            context.write(key, new Text(stats.toString()));
+//        }
+        
+        // Output the year over year changes
+       context.write(key, new Text(buildSummary(areaStats)));
 
+    }
+    
+    /**
+     * Builds a year over year summary of the increase/decrease is hospital stay
+     * days
+     */
+    private static String buildSummary(Map<Integer, AreaYearStats> stats){
+        StringBuilder sb = new StringBuilder();
+        
+        int lastValue = 0;
+        int currentValue = 0;
+        int[] years = {2009, 2010, 2011, 2012};
+        for (int y : years) {
+            sb.append(y).append(",");
+            if (stats.containsKey(y)) {
+                currentValue = stats.get(y).totalStayDays;
+            }
+            double deltaPercent = 0.0;
+            if(lastValue != 0){
+                deltaPercent = (double)(currentValue - lastValue) / lastValue;
+            }
+            
+            sb.append(String.format("%.2f", deltaPercent)).append(",");
+            lastValue = currentValue;
+        }
+        
+        return sb.toString();
     }
 
     /**
      * Keeps track of important metrics for a given area and year
-     * 
-     * @author ck1456@nyu.edu
      */
     private static class AreaYearStats {
-        public String area;
         public int year;
         public int totalStayDays;
         public int recordCount;
