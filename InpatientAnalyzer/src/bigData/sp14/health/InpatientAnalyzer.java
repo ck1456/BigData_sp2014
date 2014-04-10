@@ -10,7 +10,13 @@ import org.apache.hadoop.mapreduce.lib.input.CSVNLineInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
-
+/**
+ * Invoke Hadoop to process inpatient hospital stay data and produce
+ * summary report by county
+ * 
+ * This program makes use of the CSV input file parser module by @mvalleber
+ * to read the input data: https://github.com/mvallebr/CSVInputFormat
+ */
 public class InpatientAnalyzer {
 
     
@@ -22,6 +28,7 @@ public class InpatientAnalyzer {
         }
         
         Configuration conf = new Configuration();
+        // standard configuraiton for CSV files
         conf.set(CSVLineRecordReader.FORMAT_DELIMITER, "\"");
         conf.set(CSVLineRecordReader.FORMAT_SEPARATOR, ",");
         conf.setInt(CSVNLineInputFormat.LINES_PER_MAP, 40000);

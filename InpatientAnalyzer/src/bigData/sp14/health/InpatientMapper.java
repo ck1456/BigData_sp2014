@@ -12,7 +12,8 @@ public class InpatientMapper extends
         Mapper<LongWritable, List<Text>, Text, ArrayListTextWritable> {
 
     public static enum INPATIENT_COUNTER {
-        BAD_RECORD
+        BAD_RECORD,
+        NO_COUNTY
     }
 
     @Override
@@ -20,6 +21,7 @@ public class InpatientMapper extends
             throws IOException, InterruptedException {
 
         // Parse out the fields that we care about:
+        // County - 1
         // Zip3 - 6
         // Length of Stay - 10
         // Year - 14
@@ -27,22 +29,26 @@ public class InpatientMapper extends
         // Charges - 37
 
         try {
-            Text zip3 = value.get(6);
-            
+            Text county = value.get(1);
+            if(county.toString().trim().isEmpty()){
+                context.getCounter(INPATIENT_COUNTER.NO_COUNTY).increment(1);
+                return; // no area location to count
+            }
             ArrayListTextWritable mappedValues = new ArrayListTextWritable();
             mappedValues.add(value.get(14));
             mappedValues.add(value.get(10));
             mappedValues.add(value.get(24));
             mappedValues.add(value.get(37));
 
-            // Key: 3 code zip
+            // Key: county
             // Value: Year,LengthOfStay,Severity,Charges
-            context.write(zip3, mappedValues);
+            context.write(county, mappedValues);
 
         } catch (Exception ex) {
             // Badly formatted record
+            // Keep track so that we can be sure that it is a small percentage
+            // of the total records that get ignored
             context.getCounter(INPATIENT_COUNTER.BAD_RECORD).increment(1);
-            throw new RuntimeException(ex);
         }
 
     }
