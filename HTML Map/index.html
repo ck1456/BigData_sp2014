@@ -4,6 +4,10 @@
 
 .subunit { fill: #380000; }
 
+.subunit.Hamilton {
+	fill: #0000FF;
+}
+
 .subunit-label {
   fill: #FFFFFF;
   fill-opacity: 0.8;
@@ -30,9 +34,19 @@ var svg = d3.select("body").append("svg")
 
 
 d3.json("uk1.json", function(error, uk) {
+
+
 	var subunits = topojson.feature(uk, uk.objects.subunits);
-		
 	
+	var myArray = subunits.features
+	// console.log (array)
+	var arrayLength = myArray.length;
+	for (var i = 0; i < arrayLength; i++) {
+			// console.log(myArray[i].properties.name);
+	}
+	// console.log(subunits)
+	// console.log(subunits.features[0].properties.name)
+
 	var projection = d3.geo.albers()
     .center([20.20703125, 41.651200699345])
     .parallels([50, 60])
@@ -44,33 +58,42 @@ d3.json("uk1.json", function(error, uk) {
 
 svg.selectAll(".subunit")
       .data(subunits.features)
-    .enter().append("path")
-      .attr("class", function(d) { return "subunit " + d.id; })
-      .attr("d", path);
+	    .enter().append("path")
+      .attr("class", function(d) { 
+      		return "subunit " + d.properties.name.replace(" ","_"); 
+      })
+      .attr("d", path)
+      .text(function(d) {return d.properties.name; });
 
   svg.selectAll(".subunit-label")
       .data(subunits.features)
-    .enter().append("text")
-      .attr("class", function(d) { return "subunit-label " + d.id; })
+    	.enter().append("text")
+      .attr("class", function(d) { return "subunit-label " + d; })
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
       .attr("dy", ".35em")
       .text(function(d) { return d.properties.name; });
 
-  svg.append("path")
-      .datum(places)
-      .attr("d", path)
-      .attr("class", "place");
+  // svg.selectAll(".subunit")
+  //     .data(subunits.features)
+	 //    .enter().append("texts")
+  //     .attr("class", function(d) { return "subunit " + d; })
+  //     .attr("d", path)
+  //     .text(function(d) {return d.properties.name; });
 
-  svg.selectAll(".place-label")
-      .data(places.features)
-    .enter().append("text")
-      .attr("class", "place-label")
-      .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
-      .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-      .attr("dy", ".35em")
-      .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
-      .text(function(d) { return d.properties.name; 
-      });
+  // svg.append("path")
+  //     .datum(places)
+  //     .attr("d", path)
+  //     .attr("class", "place");
+
+  // svg.selectAll(".place-label")
+  //     .data(places.features)
+  //   	.enter().append("text")
+  //     .attr("class", "place-label")
+  //     .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
+  //     .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
+  //     .attr("dy", ".35em")
+  //     .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
+  //     .text(function(d) { return d.properties.name; });
 });
 
 
