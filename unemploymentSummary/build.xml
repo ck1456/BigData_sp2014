@@ -21,7 +21,6 @@
 	</target>
 
 
-
 	<target name="jobs" depends="jar" description="Run the pig job for unemployment">
 		<exec executable="rm">
 			<arg value="-rf" />
@@ -41,7 +40,7 @@
 	<target name="combine" depends="jar" description="Run the pig job to combine datasets">
 		<exec executable="rm">
 			<arg value="-rf" />
-			<arg value="combined-output" />
+			<arg value="output-combined" />
 		</exec>
 
 		<echo message="Running pig command:" />
@@ -51,6 +50,16 @@
 			<arg value="-x" />
 			<arg value="local" />
 			<arg value="joinCountyData.pig" />
+		</exec>
+
+		<exec executable="cat">
+			<arg value="fieldNames.csv" />
+			<redirector output="combined-results.csv" />
+		</exec>
+
+		<exec executable="cat">
+			<arg value="output-combined/part-r-00000" />
+			<redirector output="combined-results.csv" append="true" />
 		</exec>
 	</target>
 
