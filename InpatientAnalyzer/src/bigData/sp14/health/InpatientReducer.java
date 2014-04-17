@@ -52,39 +52,45 @@ public class InpatientReducer extends
         }
 
         // for each year, output the stats
-//        for (AreaYearStats stats : areaStats.values()) {
-//            context.write(key, new Text(stats.toString()));
-//        }
-        
+        // for (AreaYearStats stats : areaStats.values()) {
+        // context.write(key, new Text(stats.toString()));
+        // }
+
         // Output the year over year changes
-       context.write(key, new Text(buildSummary(areaStats)));
+        context.write(key, new Text(buildSummary(areaStats)));
 
     }
-    
+
     /**
      * Builds a year over year summary of the increase/decrease is hospital stay
      * days
      */
-    private static String buildSummary(Map<Integer, AreaYearStats> stats){
+    private static String buildSummary(Map<Integer, AreaYearStats> stats) {
         StringBuilder sb = new StringBuilder();
-        
+
         int lastValue = 0;
         int currentValue = 0;
-        int[] years = {2009, 2010, 2011, 2012};
+        int[] years = { 2009, 2010, 2011, 2012 };
         for (int y : years) {
-            sb.append(y).append(",");
+            // sb.append(y).append(",");
             if (stats.containsKey(y)) {
+                AreaYearStats a = stats.get(y);
                 currentValue = stats.get(y).totalStayDays;
+                sb.append(a).append(",");
+            } else {
+                AreaYearStats a = new AreaYearStats(); // Empty stats
+                a.year = y;
+                sb.append(a).append(",");
             }
             double deltaPercent = 0.0;
-            if(lastValue != 0){
-                deltaPercent = (double)(currentValue - lastValue) / lastValue;
+            if (lastValue != 0) {
+                deltaPercent = (double) (currentValue - lastValue) / lastValue;
             }
-            
+
             sb.append(String.format("%.2f", deltaPercent)).append(",");
             lastValue = currentValue;
         }
-        
+
         return sb.toString();
     }
 
@@ -133,7 +139,11 @@ public class InpatientReducer extends
             sb.append(totalStayDays);
             sb.append(",");
             // Average length of stay
-            sb.append(((double) totalStayDays) / recordCount);
+            if (recordCount > 0) {
+                sb.append(((double) totalStayDays) / recordCount);
+            } else {
+                sb.append(0.0);
+            }
             sb.append(",");
             // Severity 1
             sb.append(severity1Count);
@@ -151,16 +161,23 @@ public class InpatientReducer extends
             sb.append(severityOtherCount);
             sb.append(",");
             // Average severity
-            sb.append(((double) (severity1Count + (severity2Count * 2)
-                    + (severity3Count * 3) + (severity4Count * 4)))
-                    / recordCount);
+            if (recordCount > 0) {
+                sb.append(((double) (severity1Count + (severity2Count * 2)
+                        + (severity3Count * 3) + (severity4Count * 4)))
+                        / recordCount);
+            } else {
+                sb.append(0.0);
+            }
             sb.append(",");
             // Total charges
             sb.append(totalCharges);
             sb.append(",");
             // Average charges
-            sb.append(((double) totalCharges) / recordCount);
-
+            if (recordCount > 0) {
+                sb.append(((double) totalCharges) / recordCount);
+            } else {
+                sb.append(0.0);
+            }
             return sb.toString();
         }
     }

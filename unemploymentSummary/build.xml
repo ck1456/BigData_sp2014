@@ -1,0 +1,57 @@
+<project name="UnemploymentSummary" default="jar">
+
+	<property name="src.dir" value="src" />
+	<property name="pkg" value="bigData/sp14/jobs" />
+	<property name="build.dir" value="bin" />
+	<property name="dist.dir" value="dist" />
+
+	<target name="clean" description="Remove binaries">
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<target name="compile" description="Build all source files">
+		<mkdir dir="${build.dir}" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}" compiler="modern" includeantruntime="false" />
+	</target>
+
+	<target name="jar" depends="compile" description="Build the jar file to run Hadoop">
+		<jar destfile="${dist.dir}/UnemploymentUDF.jar">
+			<fileset dir="${build.dir}" includes="**/*.class" excludes="**/*Test.class" />
+		</jar>
+	</target>
+
+
+
+	<target name="jobs" depends="jar" description="Run the pig job for unemployment">
+		<exec executable="rm">
+			<arg value="-rf" />
+			<arg value="output" />
+		</exec>
+
+		<echo message="Running pig command:" />
+		<echo message="pig getUnemploymentStats.pig" />
+		<!-- Run Pig -->
+		<exec executable="pig">
+			<arg value="-x" />
+			<arg value="local" />
+			<arg value="getUnemploymentStats.pig" />
+		</exec>
+	</target>
+
+	<target name="combine" depends="jar" description="Run the pig job to combine datasets">
+		<exec executable="rm">
+			<arg value="-rf" />
+			<arg value="combined-output" />
+		</exec>
+
+		<echo message="Running pig command:" />
+		<echo message="pig joinCountyData.pig" />
+		<!-- Run Pig -->
+		<exec executable="pig">
+			<arg value="-x" />
+			<arg value="local" />
+			<arg value="joinCountyData.pig" />
+		</exec>
+	</target>
+
+</project>
