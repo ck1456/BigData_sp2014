@@ -4,8 +4,8 @@
 
 .subunit { fill: #380000; }
 
-.subunit.Hamilton {
-	fill: #0000FF;
+.subunit.hamilton {
+  fill: #FFFFFF;
 }
 
 .subunit-label {
@@ -18,6 +18,63 @@
 
 </style>
 <body>
+<input type="file" id="files" name="files[]" multiple />
+<output id="list"></output>
+<script>
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    console.log("Reading file")
+    var file = files[0]
+
+    console.log(file.name)
+
+    var reader = new FileReader();
+    reader.onload = (function(theFile) {
+        return function(e) {
+          // Render thumbnail.
+          // var span = document.createElement('span');
+
+          var stringLines = e.target.result.split(/\n/);
+          for (var i = 0, lineString; lineString = stringLines[i]; i++) {
+            var lineArray = lineString.split(", ")
+            var countyID = "subunit " + lineArray[0]
+
+            console.log(countyID)
+
+            var color = lineArray[1]
+            // console.log(color)
+            var county = document.getElementsByClassName(countyID)[0]
+            // console.log(county)
+            county.style.fill = color
+            // var context = county.getContext('2d')
+            // context.fillStyle=color;
+            // context.fillRect (0, 0, 608, 105);
+          }
+          // console.log("Inside handler  " + e.target.result)
+          // span.innerHTML = ['<img class="thumb" src="', e.target.result,
+          //                   '" title="', escape(theFile.name), '"/>'].join('');
+          // document.getElementById('list').insertBefore(span, null);
+        };
+      })(file);
+
+      // Read in the image file as a data URL.
+    reader.readAsText(file)
+
+
+    // files is a FileList of File objects. List some properties.
+    // var output = [];
+    // for (var i = 0, f; f = files[i]; i++) {
+    //   output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+    //               f.size, ' bytes, last modified: ',
+    //               f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+    //               '</li>');
+    // }
+    // document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+</script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script>
@@ -38,12 +95,12 @@ d3.json("uk1.json", function(error, uk) {
 
 	var subunits = topojson.feature(uk, uk.objects.subunits);
 	
-	var myArray = subunits.features
+	// var myArray = subunits.features
 	// console.log (array)
-	var arrayLength = myArray.length;
-	for (var i = 0; i < arrayLength; i++) {
-			// console.log(myArray[i].properties.name);
-	}
+	// var arrayLength = myArray.length;
+	// for (var i = 0; i < arrayLength; i++) {
+	// 		console.log(myArray[i].properties.name.toLowerCase().replace(" ", "_").replace(".", ""));
+	// }
 	// console.log(subunits)
 	// console.log(subunits.features[0].properties.name)
 
@@ -60,7 +117,7 @@ svg.selectAll(".subunit")
       .data(subunits.features)
 	    .enter().append("path")
       .attr("class", function(d) { 
-      		return "subunit " + d.properties.name.replace(" ","_"); 
+      		return "subunit " + d.properties.name.toLowerCase().replace(" ", "_").replace(".", ""); 
       })
       .attr("d", path)
       .text(function(d) {return d.properties.name; });
@@ -73,27 +130,6 @@ svg.selectAll(".subunit")
       .attr("dy", ".35em")
       .text(function(d) { return d.properties.name; });
 
-  // svg.selectAll(".subunit")
-  //     .data(subunits.features)
-	 //    .enter().append("texts")
-  //     .attr("class", function(d) { return "subunit " + d; })
-  //     .attr("d", path)
-  //     .text(function(d) {return d.properties.name; });
-
-  // svg.append("path")
-  //     .datum(places)
-  //     .attr("d", path)
-  //     .attr("class", "place");
-
-  // svg.selectAll(".place-label")
-  //     .data(places.features)
-  //   	.enter().append("text")
-  //     .attr("class", "place-label")
-  //     .attr("transform", function(d) { return "translate(" + projection(d.geometry.coordinates) + ")"; })
-  //     .attr("x", function(d) { return d.geometry.coordinates[0] > -1 ? 6 : -6; })
-  //     .attr("dy", ".35em")
-  //     .style("text-anchor", function(d) { return d.geometry.coordinates[0] > -1 ? "start" : "end"; })
-  //     .text(function(d) { return d.properties.name; });
 });
 
 
