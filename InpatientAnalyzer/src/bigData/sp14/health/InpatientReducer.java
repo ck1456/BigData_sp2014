@@ -42,7 +42,7 @@ public class InpatientReducer extends
 
                 // parse dollar amounts as doubles
                 String charges = t.get(3).toString().replaceAll("\\$", "");
-                stats.totalCharges += (int) Double.parseDouble(charges);
+                stats.totalCharges += Double.parseDouble(charges);
 
                 stats.recordCount++;
             } catch (Exception ex) {
@@ -106,7 +106,7 @@ public class InpatientReducer extends
         public int severity3Count;
         public int severity4Count;
         public int severityOtherCount;
-        public int totalCharges;
+        public double totalCharges;
 
         public void updateSeverityCount(int severity) {
             switch (severity) {
@@ -174,7 +174,7 @@ public class InpatientReducer extends
             sb.append(",");
             // Average charges
             if (recordCount > 0) {
-                sb.append(((double) totalCharges) / recordCount);
+                sb.append((totalCharges) / recordCount);
             } else {
                 sb.append(0.0);
             }

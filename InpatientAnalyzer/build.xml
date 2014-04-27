@@ -20,8 +20,8 @@
 		</jar>
 	</target>
 
-	<property name="hd.data.dir" value="project-sample" />
-	<property name="hd.out.dir" value="output-sample/health" />
+	<property name="hd.data.dir" value="project" />
+	<property name="hd.out.dir" value="output/health" />
 	
 	<target name="hadoop" depends="jar" description="Run the Hadoop job">
 		<echo message="Running hadoop command:" />
