@@ -3,6 +3,7 @@
 % health and job metrics
 %
 % author: chris keitel (ck1456@nyu.edu)
+% contributed: chen price (cp1425@nyu.edu)
 
 % skips the headers and county labels (for now)
 data = csvread('combined-results.csv', 1, 1);
@@ -72,6 +73,10 @@ stay_unemp_map_file = fopen('stay_unemp_map.txt', 'w');
 sev_unemp_map_file = fopen('sev_unemp_map.txt', 'w');
 charges_unemp_map_file = fopen('charges_unemp_map.txt', 'w');
 charges_unemp_percent_map_file = fopen('charges_unemp_percent_map.txt', 'w');
+sev_unemp_map_green_file = fopen('sev_unemp_map_green.txt','w');
+sev_unemp_map_blue_file = fopen('sev_unemp_map_blue.txt','w');
+
+format short
 for c = 1:num_counties
     name = lower(countyNames{1}{c+1});
     name = strrep(name, ' ', '_');
@@ -82,12 +87,25 @@ for c = 1:num_counties
     fprintf(sev_unemp_map_file, '%s, %s\n', name, colorize(sevUnempCorr(c)));
     fprintf(charges_unemp_map_file, '%s, %s\n', name, colorize(chargesUnempCorr(c)));
     fprintf(charges_unemp_percent_map_file, '%s, %s\n', name, colorize(chargesUnempPercentCorr(c)));
+    
+    % write county,correlation for counties positively correlated severity 
+    if (sevUnempCorr(c) > 0)
+        fprintf(sev_unemp_map_green_file, '%s, %.4f\n', name, sevUnempCorr(c));
+    end
+    
+    % write county,correlation for counties negatively correlated severity 
+    if (sevUnempCorr(c) < 0)
+        fprintf(sev_unemp_map_blue_file, '%s, %.4f\n', name, sevUnempCorr(c));
+    end
 end
 
 fclose(stay_unemp_map_file);
 fclose(sev_unemp_map_file);
 fclose(charges_unemp_map_file);
 fclose(charges_unemp_percent_map_file);
+fclose(sev_unemp_map_green_file);
+fclose(sev_unemp_map_blue_file);
+
 
 
 
