@@ -49,6 +49,13 @@ def getCounties(infile):
 	return counties 
 
 def save2csv(filename, sevCorr):
+	"""
+	writes csv data to a file
+
+	Keyword arguments:
+	filename -- the csv file to write to
+	sevCorr -- the data to write
+	"""
 	with open(filename, 'w') as fp:
 	    writer = csv.writer(fp, delimiter=',')
 	    writer.writerow(["County", "Correlation"])
