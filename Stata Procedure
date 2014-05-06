@@ -1,0 +1,35 @@
+Stata Procedure:
+
+	-- First, using Excel we found the average stays per county, average severity per county, and average cost per stay per county.
+
+	-- Second, we split the counties based on those that fell under the median unemployment rate (inclusive) and those above.  Those that fell under the median we grouped as the "Low Unemployment" group and those above were grouped as the "High Unemployment" group.
+		
+		2009: 8.3 => Median unemployment rate
+		2010: 8.5 => Median unemployment rate
+		2011: 8.3 => Median unemployment rate
+		2012: 8.5 => Median unemployment rate
+
+	-- For each group we calculated the average of the average stays, severity and cost per patient for all counties in that group. This gave us seven numbers for each group.
+		->  number of counties in that group.
+		->  avg stay days for that group.
+		->  standard deviation for avg stay days for that group.
+		->  avg severity per patient for that group.
+		->  standard deviation for avg severity per patient for that group.
+		->  avg cost per stay for that group.
+		->  standard deviation for avg cost per stay for that group.
+
+	-- Then using Stata we compute the statistical difference between the means using the command:
+		
+		->  ttesti n1 mean1 sd1 n2 mean2 sd2 
+
+		where:
+			n1 = number of counties in Low Unemployment group.
+			mean1 = any one of the respective means (either stay days, severity, or cost per stay) for the Low Unemployment group
+			sd1 = the standard deviation that corresponds to mean1
+			n2 = number of counties in the High Unemployment group.
+			mean2 = the mean corresponding to the mean used in mean1 but for the the High Unemployment group.
+			sd2 = the standard deviation for mean2.
+
+	-- This produced the p-value that indicated whether or not there was a statistical significance between the difference of the means between the Low Unemployment and High Unemployment group.
+
+	     
