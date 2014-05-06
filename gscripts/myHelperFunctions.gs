@@ -18,7 +18,7 @@ function removeColumnByName(colName)
   }
   
   var recipient = Session.getActiveUser().getEmail();
-  var subject = 'A list of files in your Google Drive';
+  var subject = 'Gscript log for Big Data project';
   var body = Logger.getLog();
   MailApp.sendEmail(recipient, subject, body);
 }
