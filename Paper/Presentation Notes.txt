@@ -1,0 +1,32 @@
+Big Data - Presentation Bullet Points
+May 8, 2014
+
+
+Beginning 1-5 Background & Data
+Chris
+
+In designing our analytic, we wanted to explore a topic that is relevant to everyone.  
+
+[Slide] We considered two major social phenomena that have affected nearly everyone in the past decade: the global recession and the institution of the Affordable Care Act (Obamacare).  Ultimately we asked: Is working good for your health?
+
+So, how could we find this out?  Previous research has indicated that there is a correlation between Socio-Economic Status (SES) and health.  And employment is one of the biggest contributors to Socio-economic status.  But many things affect how people utilize health services.  Many previous studies depended on individual's self-reporting of their health which is highly subjective, and even then a causal relationship was difficult to verify.  We wanted a more objective standard.
+
+Our intuition told us that maybe having a job means that you have health care and take advantage of preventative medicine?  Alternately, maybe having a job causes excessive stress in many people and encourages poor eating habits which leads to a host of known health issues?
+
+[Slide] We wanted to use publicly available data - sources that people could get and do this analysis themselves if they so desired (and knew how to use Hadoop).  And we wanted to be able to make recommendations about what we discovered that could improve people's lives.
+
+[Slide] We ended up finding a really interesting data set published by New York State's open data project which gave comprehensive data about inpatient hospital stays.  This is great because it is an objective, quantitative way to measure people going to the hospital.  And we made the assumption that people don't generally go to the hospital if they aren't sick.  We also ended up using data from the United States Bureau of Labor and statistics which aggregates unemployment data for every county in the country.
+
+[Slide] Before we really settled on our path, we encountered a few obstacles that are worth mentioning although we did overcome them.  Twitter turned out not to be a useful data source because the geographic search is extremely limited.  NYU's HPC cluster runs an obsolete version of Hadoop.  Not the end of the world, but made processing inconvenient.  We did constanlty keep saying we wish we had more data, - we only have 4 years, but the good thing is that more data is coming every year.  So the analytic has hope that it can keep getting better.  Finally, just because our initial assumptions weren't clearly validated, we were able to dig deeper and find interesting insights by persevering.
+
+[Slide] In brief, our analytic uses employment statistics and hospital inpatient data by county for New York state and attempts to find a correlation between employment and health.  Khen is going to show you how we attacked this problem and the results that we got.
+
+
+
+Middle 6-13 Design & Results
+Khen
+
+
+
+End 14-End Conclusions
+George
